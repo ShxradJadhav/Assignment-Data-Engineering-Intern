@@ -1,249 +1,268 @@
-# Assignment-Data-Engineering-Intern
+# 🏢 B2B Job Market Intelligence Pipeline
 
-# 🚀 Job Market Intelligence Pipeline (Web Scraper + ETL + API)
-
-## 📌 Overview
-
-Businesses often lack real-time visibility into hiring trends, competitor activity, and job market demand. This project solves that problem by building an **end-to-end data pipeline** that:
-
-* Scrapes job data from a public source
-* Cleans and standardizes the data
-* Stores it in a structured database
-* Exposes it via an API for real-time access
-
-The system is designed to run automatically and deliver **reliable, queryable insights**.
+> A fully automated data pipeline that scrapes, cleans, stores, and serves job listing data via a REST API — built as a Data Engineering Intern assignment.
 
 ---
 
-## 💼 Problem Statement
+## 📌 Problem Statement
 
-Organizations need access to external job market data to:
+Businesses — especially recruitment agencies, HR tech platforms, and talent analytics firms — need **real-time visibility into job market trends**. Manually tracking job postings across platforms is slow, inconsistent, and unscalable.
 
-* Track competitor hiring trends
-* Identify demand for specific roles
-* Understand regional hiring patterns
-
-However, this data is not readily available in structured form.
-
-👉 This project builds a **dynamic data pipeline** to bridge that gap.
+This project builds an end-to-end **automated data pipeline** that:
+- Scrapes structured job listing data from a public source
+- Cleans and standardizes the data
+- Loads it into a relational database
+- Exposes it via a live REST API — ready for dashboards, CRMs, or downstream analytics
 
 ---
 
-## 🧱 Architecture
+## 🗂️ Project Structure
 
 ```
-Scraper → Raw Data → Cleaning → MySQL DB → FastAPI → User/API
-```
-
-### Flow:
-
-1. Scraper collects job listings
-2. Data is cleaned and standardized
-3. Stored in MySQL database
-4. API serves data to users dynamically
-
----
-
-## ⚙️ Tech Stack
-
-* **Python**
-* **BeautifulSoup / Requests** (Web Scraping)
-* **Pandas** (Data Cleaning)
-* **MySQL** (Database)
-* **FastAPI** (API Layer)
-* **OS / Scheduler** (Pipeline Automation)
-
----
-
-## 🔍 Features
-
-### ✅ Web Scraping
-
-* Extracts job title, company, location, link
-* Handles pagination
-* Handles missing fields and failures
-
-### ✅ Data Cleaning
-
-* Removes duplicates
-* Standardizes text formats
-* Handles null values
-* Extracts region from location
-
-### ✅ Database Storage
-
-* Stores cleaned data in MySQL
-* Optimized bulk insertion
-* Avoids duplicate entries
-
-### ✅ API Layer
-
-* Fetch jobs dynamically
-* Supports filters (location, limit)
-
-Example:
-
-```
-GET /jobs?location=Remote&limit=10
-```
-
----
-
-## 📊 API Endpoints
-
-### 🔹 Get Jobs
-
-```
-GET /jobs
-```
-
-### 🔹 Filtered Jobs
-
-```
-GET /jobs?location=New York&limit=20
-```
-
-### 🔹 Jobs by Region
-
-```
-GET /jobs/region
-```
-
----
-
-## 🛠️ Project Structure
-
-```
-project/
+Web_Scrapper_project/
 │
-├── scraper.py
-├── clean_data.py
-├── load_data.py
-├── pipeline.py
+├── scraper.py           # Phase 1: Scrapes job listings, exports raw CSV
+├── clean_data.py        # Phase 2: Cleans and standardizes the raw data
+├── load_data.py         # Phase 2: Loads cleaned data into MySQL
+├── run_pipeline.py      # Automation: Runs all 3 steps in sequence
+├── api.py               # Phase 3: FastAPI REST endpoint
 │
 ├── data/
-│   ├── raw/
 │   └── clean/
+│       └── jobs_clean.csv   # Cleaned output (auto-generated)
 │
-├── api/
-│   └── main.py
-│
+├── jobs_fake_python.csv     # Raw scraped data (auto-generated)
 └── README.md
 ```
 
 ---
 
-## ▶️ How to Run Locally
+## ⚙️ Tech Stack
 
-### 1. Clone Repo
+| Layer | Tool |
+|---|---|
+| Scraping | Python, `requests`, `BeautifulSoup` |
+| Data Cleaning | `pandas` |
+| Database | MySQL |
+| API | FastAPI |
+| Automation | Python `os.system()` orchestrator |
+
+---
+
+## 🔄 Pipeline Overview
 
 ```
-git clone <your-repo-link>
-cd project
+[Public Web Source]
+       │
+       ▼
+  scraper.py          →  jobs_fake_python.csv   (raw)
+       │
+       ▼
+  clean_data.py       →  data/clean/jobs_clean.csv   (standardized)
+       │
+       ▼
+  load_data.py        →  MySQL: CleanDB.final_jfp   (stored)
+       │
+       ▼
+  api.py              →  GET /jobs   (served)
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Python 3.8+
+- MySQL Server (running locally)
+- pip
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/Web_Scrapper_project.git
+cd Web_Scrapper_project
 ```
 
 ### 2. Install Dependencies
 
-```
-pip install -r requirements.txt
+```bash
+pip install requests beautifulsoup4 pandas mysql-connector-python fastapi uvicorn
 ```
 
-### 3. Setup Environment Variables
+### 3. Set Up MySQL Database
 
-Create a `.env` file:
+Log into MySQL and run:
 
+```sql
+CREATE DATABASE CleanDB;
+USE CleanDB;
+
+CREATE TABLE final_jfp (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    company VARCHAR(255),
+    location VARCHAR(255),
+    job_link TEXT,
+    region VARCHAR(10)
+);
 ```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=CleanDB
+
+### 4. Configure Environment Variables
+
+Update the database credentials in `load_data.py` and `api.py`:
+
+```python
+host     = "localhost"
+user     = "root"
+password = "your_password"   # ← change this
+database = "CleanDB"
+```
+
+> **Tip:** For production, move these to a `.env` file and use `python-dotenv` to load them.
+
+### 5. Run the Full Pipeline
+
+```bash
+python run_pipeline.py
+```
+
+This runs all three steps automatically:
+1. Scrapes job listings → saves raw CSV
+2. Cleans the data → saves clean CSV
+3. Loads clean data → inserts into MySQL
+
+### 6. Start the API
+
+```bash
+uvicorn api:app --reload
+```
+
+Visit: [http://127.0.0.1:8000/jobs](http://127.0.0.1:8000/jobs)
+
+Auto-generated API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+---
+
+## 📡 API Reference
+
+### `GET /jobs`
+
+Returns the latest 50 job listings from the database.
+
+**Sample Response:**
+
+```json
+[
+  [1, "software developer", "Hallman-Metz", "Cynthiachester, TX", "https://...", "TX"],
+  [2, "data analyst", "Ryan LLC", "Port Davidmouth, NY", "https://...", "NY"]
+]
 ```
 
 ---
 
-### 4. Run Pipeline
+## 🧹 Data Cleaning — Decisions Documented
 
-```
-python pipeline.py
-```
-
----
-
-### 5. Run API
-
-```
-uvicorn main:app --reload
-```
-
-👉 Open:
-
-```
-http://127.0.0.1:8000/docs
-```
+| Step | Decision |
+|---|---|
+| Exact duplicates | Dropped with `drop_duplicates()` |
+| Whitespace | Stripped from all string fields |
+| Job titles | Lowercased for consistency |
+| Missing values | Filled with `"Unknown"` |
+| Region extraction | Parsed 2-letter state code from end of location string using regex `([A-Z]{2})$` |
+| Newline characters | Replaced with spaces to prevent CSV layout breaks |
 
 ---
 
-## ⏱️ Automation
+## 🤖 Automation
 
-The pipeline can be scheduled using:
+`run_pipeline.py` chains all three scripts in sequence using `os.system()`:
 
-* Cron jobs (Linux/Mac)
-* Task Scheduler (Windows)
-
-Example:
-
-```
-Runs every 6 hours to keep data updated
+```python
+os.system("python scraper.py")
+os.system("python clean_data.py")
+os.system("python load_data.py")
 ```
 
----
+To schedule this pipeline to run automatically (e.g., daily):
 
-## 🤖 Bonus (Intelligence Layer)
+**On Linux/macOS — use cron:**
+```bash
+crontab -e
+# Add this line to run every day at 8 AM:
+0 8 * * * /usr/bin/python3 /path/to/run_pipeline.py
+```
 
-Basic insights added:
-
-* Job distribution by region
-* Filtering for targeted analysis
-
-Future improvements:
-
-* Trend detection
-* Salary prediction
-* Role demand forecasting
-
----
-
-## ⚖️ Trade-offs
-
-* Used MySQL for simplicity over distributed systems
-* Basic scraping instead of headless browser (faster execution)
-* Focused on reliability over complexity due to time constraint
+**On Windows — use Task Scheduler:**
+- Program: `python`
+- Arguments: `C:\path\to\run_pipeline.py`
+- Trigger: Daily
 
 ---
 
-## 📈 Future Enhancements
+## 📊 B2B Use Cases
 
-* Add real-time streaming (Kafka)
-* Deploy on cloud (AWS/Azure)
-* Add frontend dashboard
-* Integrate ML for job trend predictions
+This pipeline can deliver value to:
 
----
-
-## 👨‍💻 Author
-
-**Sharad Jadhav**
-Data Engineer | Python | SQL | Azure
+| Business | Use Case |
+|---|---|
+| Recruitment agencies | Track which roles are in demand by region |
+| HR analytics platforms | Monitor hiring trends over time |
+| Salary benchmarking tools | Combine with salary data for compensation insights |
+| B2B SaaS tools | Feed job data into CRM or outreach workflows |
 
 ---
 
-## ⭐ Conclusion
+## 🧠 Bonus: AI/ML Layer (Conceptual Write-Up)
 
-This project demonstrates:
+### Proposed Enhancement: Job Category Classifier
 
-* End-to-end data pipeline design
-* Data cleaning and transformation
-* Backend API development
-* Practical business use-case implementation
+**What:** Use a pre-trained NLP model (e.g., `sentence-transformers` or OpenAI embeddings) to automatically classify each job title into a standardized category (e.g., Engineering, Marketing, Finance).
 
-👉 Built with a focus on **scalability, automation, and usability**.
+**Why:**
+- Raw job titles are inconsistent — "Sr. SWE", "Software Engineer III", and "Dev" all mean the same thing
+- Categorized data is far more useful for downstream analytics and filtering
+
+**Approach:**
+- Embed job titles using `sentence-transformers/all-MiniLM-L6-v2`
+- Cluster similar titles using K-Means or cosine similarity
+- Label clusters manually once, then auto-classify new titles
+
+**Trade-offs:**
+
+| Trade-off | Consideration |
+|---|---|
+| Accuracy vs. Speed | Larger models (GPT-4) = higher accuracy but slower/expensive |
+| Zero-shot vs. Fine-tuned | Zero-shot is faster to deploy; fine-tuned on job data performs better |
+| Rule-based fallback | A regex/keyword fallback handles edge cases cheaply |
+
+---
+
+## 📝 Environment Variables Reference
+
+| Variable | Description | Default |
+|---|---|---|
+| `DB_HOST` | MySQL host | `localhost` |
+| `DB_USER` | MySQL username | `root` |
+| `DB_PASSWORD` | MySQL password | *(required)* |
+| `DB_NAME` | Database name | `CleanDB` |
+
+---
+
+## 🏗️ Future Improvements
+
+- Move credentials to `.env` using `python-dotenv`
+- Add pagination support for multi-page sources
+- Add logging with timestamps for each pipeline run
+- Dockerize the full stack for one-command deployment
+- Add a simple frontend dashboard (React or Streamlit)
+- Implement deduplication at the DB level to support repeated runs safely
+
+---
+
+## 👤 Author
+
+**[Your Name]**
+Data Engineering Intern Assignment
