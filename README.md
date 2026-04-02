@@ -154,6 +154,10 @@ An interactive dashboard visualizing the scraped job data — filterable by regi
 
 👉 [View Dashboard](https://shxradjadhav.github.io/Web_Scrapper_project/dashboard.html)
 
+<img width="1893" height="761" alt="image" src="https://github.com/user-attachments/assets/bdcbd773-6ea8-4636-ad02-56a09cbba129" />
+<img width="1881" height="875" alt="image" src="https://github.com/user-attachments/assets/3ad3b859-0c78-4c79-9703-e4cf9bfe6cb8" />
+
+
 ### `GET /jobs`
 
 Returns the latest 50 job listings from the database.
