@@ -148,6 +148,12 @@ Auto-generated API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs
 
 ## 📡 API Reference
 
+## 📊 Live Dashboard
+
+An interactive dashboard visualizing the scraped job data — filterable by region, role type, and keyword search.
+
+👉 [View Dashboard](https://shxradjadhav.github.io/Web_Scrapper_project/dashboard.html)
+
 ### `GET /jobs`
 
 Returns the latest 50 job listings from the database.
