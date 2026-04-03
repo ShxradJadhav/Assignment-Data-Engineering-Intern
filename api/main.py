@@ -1,25 +1,20 @@
 from fastapi import FastAPI
-import mysql.connector
+import pandas as pd
+import os
 
 app = FastAPI()
 
+# Path to the cleaned data
+CSV_PATH = "data/clean/jobs_clean.csv"
+
+@app.get("/")
+def home():
+    return {"status": "Online", "message": "B2B Job Market API is live"}
+
 @app.get("/jobs")
 def get_jobs():
-
-    conn = mysql.connector.connect(
-        host="localhost",
-        database="CleanDB",
-        user="root",
-        password="root"
-    )
-
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM final_jfp LIMIT 50")
-
-    rows = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return rows
+    if os.path.exists(CSV_PATH):
+        df = pd.read_csv(CSV_PATH)
+        # Convert dataframe to dictionary for JSON output
+        return df.to_dict(orient="records")
+    return {"error": "Data file not found. Run pipeline first."}
