@@ -1,16 +1,41 @@
 import pandas as pd
-import sqlite3
+import mysql.connector
 
-# Load cleaned data (USE RELATIVE PATH — VERY IMPORTANT)
-df = pd.read_csv("data/clean/jobs_clean.csv")
+# Load cleaned data
+path = "C:\\Users\\User\\Desktop\\Web_Scrapper_project\\data\\clean\\jobs_clean.csv"
+df = pd.read_csv(path)
 
-# Connect to SQLite (creates file if not exists)
-conn = sqlite3.connect("jobs.db")
+# Connect to MySQL
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="CleanDB"
+)
 
-# Load data into table
-df.to_sql("final_jfp", conn, if_exists="replace", index=False)
+cursor = conn.cursor()
 
-print(f"{len(df)} records inserted into SQLite.")
+# Insert query
+query = """
+INSERT INTO final_jfp (title, company, location, job_link,  region)
+VALUES (%s, %s, %s, %s, %s)
+"""
+
+# Insert rows
+for index, row in df.iterrows():
+    cursor.execute(query, (
+        row["title"],
+        row["company"],
+        row["location"],
+        row["job_link"],
+        row["region"]
+    ))
+
+# Commit changes
+conn.commit()
+
+print(cursor.rowcount, "records inserted.")
 
 # Close connection
+cursor.close()
 conn.close()
