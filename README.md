@@ -1,3 +1,5 @@
+Deployment Link :-
+https://price-tracker-api-4gjp.onrender.com/prices
 # 🏢 B2B Job Market Intelligence Pipeline
 
 > A fully automated data pipeline that scrapes, cleans, stores, and serves job listing data via a REST API — built as a Data Engineering Intern assignment.
