@@ -4,8 +4,9 @@ import os
 
 app = FastAPI()
 
-# Path to the cleaned data
-CSV_PATH = "data/clean/jobs_clean.csv"
+# This finds the folder where api.py is located and joins it with the data path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "data", "clean", "jobs_clean.csv")
 
 @app.get("/")
 def home():
