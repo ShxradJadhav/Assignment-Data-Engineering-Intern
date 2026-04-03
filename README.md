@@ -4,8 +4,6 @@
 - **Live API Endpoint:** [https://assignment-data-engineering-intern.onrender.com/jobs](https://assignment-data-engineering-intern.onrender.com/jobs)
 - **Interactive Documentation:** [https://assignment-data-engineering-intern.onrender.com/docs](https://assignment-data-engineering-intern.onrender.com/docs)
 ---
-# 🏢 B2B Job Market Intelligence Pipeline
-
 > A fully automated data pipeline that scrapes, cleans, stores, and serves job listing data via a REST API — built as a Data Engineering Intern assignment.
 
 ---
