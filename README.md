@@ -1,8 +1,8 @@
-# Deployment Link :-
-https://assignment-data-engineering-intern.onrender.com
+# 🏢 B2B Job Market Intelligence Pipeline
 
-https://assignment-data-engineering-intern.onrender.com/docs
-
+## 🚀 LIVE STATUS: [✅ ONLINE]
+- **Live API Endpoint:** [https://assignment-data-engineering-intern.onrender.com/jobs](https://assignment-data-engineering-intern.onrender.com/jobs)
+- **Interactive Documentation:** [https://assignment-data-engineering-intern.onrender.com/docs](https://assignment-data-engineering-intern.onrender.com/docs)
 ---
 # 🏢 B2B Job Market Intelligence Pipeline
 
